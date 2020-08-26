@@ -41,16 +41,32 @@ ending_point = int(input("Enter the number of terms at which to stop the formula
 starting_point = int(input("Enter the number of terms to start comparing formulas: "))
 
 # creating lists of approximations of pi based on starting and ending points
-list_one = [odd_product_formula(x) for x in range(starting_point, ending_point)]
-list_two = [leibniz_madhava(x) for x in range(starting_point, ending_point)]
-list_three = [wallis(x) for x in range(starting_point, ending_point)]
-list_four = [basel(x) for x in range(starting_point, ending_point)]
-pi_constant = [math.pi for x in range(starting_point, ending_point)]
+difference = ending_point-starting_point
+step = 2 * int( (ending_point-starting_point) / 100) + 1
+y_axis_pts_all = range(starting_point, ending_point)
+# leibniz_madhava formula needs an odd step, otherwise, graph bounces erratically up and down
+# very fast
 
-list_of_plots = [list_one, list_two, list_three, list_four, pi_constant]
+if(starting_point <= ending_point and difference<10000):
+    # difference cannot be too big, otherwise computer has hard time loading plot
+    y_axis_pts_listtwo = range(starting_point, ending_point, step)
+    list_two = [leibniz_madhava(x) for x in range(starting_point, ending_point, step)]
+    list_one = [odd_product_formula(x) for x in range(starting_point, ending_point)]
+    list_three = [wallis(x) for x in range(starting_point, ending_point)]
+    list_four = [basel(x) for x in range(starting_point, ending_point)]
+    pi_constant = [math.pi for x in range(starting_point, ending_point)]
 
-# creates a graphical plot of each formula
-for list in list_of_plots:
-    plt.plot(list)
+    # creating a graphical plot of each formula
+    plt.plot(y_axis_pts_all, pi_constant, linestyle='--', label = 'Real value of pi')
+    plt.plot(y_axis_pts_all, list_one, label = 'odd product formula')
+    plt.plot(y_axis_pts_listtwo, list_two, label = 'leibniz-madhava', linestyle = '-')
+    plt.plot(y_axis_pts_all, list_three, label = 'Wallis product')
+    plt.plot(y_axis_pts_all, list_four, label = 'Basel formula')
 
-plt.show()
+    plt.xlabel('Number of terms in function')
+    plt.legend()
+    plt.show()
+
+else:
+    plt.title('Starting point must be greater than ending point,\n and the maximum difference is 9999. Please try again:')
+    plt.show()
