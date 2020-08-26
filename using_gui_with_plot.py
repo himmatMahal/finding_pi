@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 import math
 
 class VisualizingPi:
+    # initialize the main window:
     def __init__(self, master):
         self.master = master
 
@@ -22,6 +23,7 @@ class VisualizingPi:
         self.canvas = tk.Canvas(master, height=self.HEIGHT, width=self.WIDTH, bg='#2c2c4d')
         self.canvas.pack()
 
+        # two loops below create 5 radio buttons each
         i=0
         for button in self.end_buttons:
             button = tk.Radiobutton(self.canvas, text='{}'.format(self.ending_options[i]), variable=self.button_end_var,
@@ -31,7 +33,6 @@ class VisualizingPi:
             y_position = float(i/9) + 0.1
             button.place(relx=0.3,rely=y_position)
             i=i+1
-
         i=0
         for button in self.start_buttons:
             button = tk.Radiobutton(self.canvas, text='{}'.format(self.starting_options[i]), variable=self.button_start_var,
@@ -42,6 +43,7 @@ class VisualizingPi:
             button.place(relx=0.1,rely=y_position)
             i=i+1
 
+    # functions to set starting and ending points:
     def set_start(self):
         print("{} was selected (start)".format(self.button_start_var.get()))
 
