@@ -12,7 +12,6 @@ def basel(terms=10):
         pi_sum += (i**(-2))
     pi_approx = nmp.longdouble((6*pi_sum)**(0.5))
     return pi_approx
-
 def wallis(terms=10):
     # https://en.wikipedia.org/wiki/Wallis_product
     pi_product = nmp.longdouble(1.0)
@@ -21,7 +20,6 @@ def wallis(terms=10):
         pi_product = pi_product*( ((2*n)**2) /( ((2*n)-1)*((2*n)+1) ) )
     pi_approx = nmp.longdouble(2*pi_product)
     return pi_approx
-
 def odd_product_formula(terms=10):
     # https://en.wikipedia.org/wiki/List_of_formulae_involving_%CF%80 - under 'other infinite series'
     pi_sum = nmp.longdouble(0.0)
@@ -30,7 +28,6 @@ def odd_product_formula(terms=10):
         pi_sum += 1/n
     pi_approx = nmp.longdouble(8*pi_sum)
     return pi_approx
-
 def leibniz_madhava(terms=10):
     # https://en.wikipedia.org/wiki/Leibniz_formula_for_%CF%80
     pi_sum = nmp.longdouble(0.0)
@@ -41,33 +38,31 @@ def leibniz_madhava(terms=10):
     return pi_approx
 
 class VisualizingPi:
-    # initialize the main window:
+    """
+    Class represents a GUI object with buttons, and various options to create graphs
+    that show how various infinite series which calculate Pi behave
+    """
     def __init__(self, master):
+        """
+        Construct functioning GUI attributes like buttons, labels, etc.
+        """
         self.master = master
-
         self.HEIGHT = 600
         self.WIDTH = 600
         self.RADIOBUTTON_FONT = ("Helvetica", 11, "bold")
         self.LABEL_FONT = ("Helvetica", 12, "bold")
-
         self.graph_buttons = [None]*4
         self.start_buttons = [None]*6
         self.end_buttons = [None]*6
         # lists above create empty lists, which will be filled with button objects below
-
         self.starting_options = [0,1,10,100,1000,3000]
         self.ending_options = [10,50,500,2500,5000,10000]
         self.graph_button_text = ['Basel','Wallis','Leibniz-Madhava','Sum of Odd\nProducts']
-
-        # Later on, use latex to style font:
-        # https://matplotlib.org/3.1.1/tutorials/text/usetex.html
-
         self.button_start_var = tk.IntVar()
-        # by default, start is 0 and end is maximum possible value
         self.button_end_var = tk.IntVar(value=self.ending_options[-1])
-
-        # list below keeps track of which buttons are toggled (0 - off, 1 - on)
+        # by default, start is 0 and end is maximum possible value
         self.options_selected = [tk.IntVar(),tk.IntVar(),tk.IntVar(),tk.IntVar()]
+        # list above keeps track of which buttons are toggled (0 - off, 1 - on)
 
         master.title('Visualizing Pi')
         self.canvas = tk.Canvas(master, height=self.HEIGHT, width=self.WIDTH, bg='#ccc5b9')
@@ -91,7 +86,7 @@ class VisualizingPi:
         self.radiobtn_label.place(relx=0.1,rely=0.065)
         for button in self.end_buttons:
             button = tk.Radiobutton(self.canvas, text='{}'.format(self.ending_options[i]), variable=self.button_end_var,
-                            value=self.ending_options[i], command=self.set_end, bg='#ccc5b9',fg='#403d39',
+                            value=self.ending_options[i], command=self.check_start_end, bg='#ccc5b9',fg='#403d39',
                             font=self.RADIOBUTTON_FONT, selectcolor='#eb5e28')
             self.end_buttons[i] = button
             y_position = float(i/15) + 0.15
@@ -129,8 +124,11 @@ class VisualizingPi:
             button.place(relx=0.5,rely=y_position)
             i=i+1
 
-    # methods to set starting and ending points, will be used when radio buttons are clicked:
-    def set_end(self):
+    def check_start_end(self):
+        """
+        Disable all starting option radiobuttons which are less than the selected
+        ending option
+        """
         i=0
         for x in self.starting_options:
             if self.button_end_var.get() <= x:
@@ -141,8 +139,11 @@ class VisualizingPi:
                 self.start_buttons[i].configure(state='normal')
             i=i+1
 
-    # methods to create graphs below
     def create_plots(self):
+        """
+        Create plots based on which starting/ending points and which
+        pi-approximating functions were selected
+        """
         x_values = nmp.array(range(self.button_start_var.get(), self.button_end_var.get()))
         # the 'step' below ensures that the list of points will not be too long
         # to help graphs load faster
@@ -167,8 +168,8 @@ class VisualizingPi:
         if self.options_selected[3].get()==1:
             plt.plot(x_values, nmp.array([odd_product_formula(x) for x in x_values]),
                     label='Sum of Odd Products:\n{}'.format(odd_product_formula(x_values[-1])), linewidth=1)
-            # control statements below change y-axis zoom based on start/end points
-            # to give it a cleaner look
+        # control statements below change y-axis zoom based on start/end points
+        # to give it a cleaner look
         if self.button_end_var.get() > 500:
             plt.ylim(3.140,3.143)
         elif self.button_end_var.get() > 50:
@@ -180,6 +181,9 @@ class VisualizingPi:
         plt.show()
 
     def create_accuracy_plot(self):
+        """
+        Create a bar graph that displays each pi-approximating functions percent accuracy
+        """
         accuracy_list = []
         name_list = []
         colors = []

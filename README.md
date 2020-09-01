@@ -1,9 +1,10 @@
-"# finding_pi"
+"# Visualizing Pi"
 
-by Himmat Mahal
+# by Himmat Mahal
 
-This project will take various formulas for calculting pi,
-and compare how accurate they are.
+Program uses matplotlib to create visually appealing graphs created by
+these various formulas, tkinter to create the GUI application, PIL to
+help insert images, as well as numpy.
 
-Program uses matplotlib to visualize graphs created by
-these various formulas.
+This project takes 4 infinite series which converge to Pi,
+compares how accurate they are, and graphs their behavior.
